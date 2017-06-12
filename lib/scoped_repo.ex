@@ -52,6 +52,8 @@ defmodule ScopedRepo do
             defparamless(repo, :one!, assoc_name),
             defwithid(repo, :get, assoc_name),
             defwithid(repo, :get!, assoc_name),
+            defwithid(repo, :delete, assoc_name),
+            defwithid(repo, :delete!, assoc_name),
             definsert(repo, :insert, assoc_name, relation),
             definsert(repo, :insert!, assoc_name, relation),
             defupdate(repo, :update, assoc_name, relation),
@@ -61,6 +63,8 @@ defmodule ScopedRepo do
           [
             defparamless(repo, :one, assoc_name),
             defparamless(repo, :one!, assoc_name),
+            defparamless(repo, :delete, assoc_name),
+            defparamless(repo, :delete!, assoc_name),
             definsert(repo, :insert, assoc_name, relation),
             definsert(repo, :insert!, assoc_name, relation),
             defupdate(repo, :update, assoc_name, relation),
