@@ -2,10 +2,10 @@ defmodule ScopedRepo do
   defmodule InvalidSpecificationException, do: defexception [:message]
 
   defmacro __using__(options) do
-    scope = options[:scope]
+    scope_by = options[:scope_by]
     repo = options[:repo]
 
-    if is_nil(scope) do
+    if is_nil(scope_by) do
       raise InvalidSpecificationException, "You need to specify a schema to scope by. Pass a :scope option to use()"
     end
 
@@ -14,9 +14,9 @@ defmodule ScopedRepo do
     end
 
     quote do
-      Module.register_attribute __MODULE__, :scope, []
+      Module.register_attribute __MODULE__, :scope_by, []
       Module.register_attribute __MODULE__, :repo, []
-      @scope unquote(scope)
+      @scope_by unquote(scope_by)
       @repo unquote(repo)
       @before_compile unquote(__MODULE__)
     end
@@ -25,7 +25,7 @@ defmodule ScopedRepo do
   defmacro __before_compile__(env) do
     function_headers() ++
     insert_functions_for(
-      Module.get_attribute(env.module, :scope),
+      Module.get_attribute(env.module, :scope_by),
       Module.get_attribute(env.module, :repo)
     )
   end
