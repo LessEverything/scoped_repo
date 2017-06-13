@@ -123,7 +123,7 @@ defmodule ScopedRepo do
 
   defp def_delete(repo, func, assoc_name) do
     quote do
-      def unquote(func)(base, unquote(assoc_name), id, params, opts) do
+      def unquote(func)(base, unquote(assoc_name), id) do
         base
         |> Ecto.assoc(unquote(assoc_name))
         |> unquote(repo).get!(id)
