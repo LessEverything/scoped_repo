@@ -36,6 +36,7 @@ defmodule ScopedRepo do
         def insert(base, assoc_name,  params, opts \\ [])
       end,
       quote do
+        def update(base, assoc_name, params, opts \\ [])
         def update(base, assoc_name, id, params, opts \\ [])
       end
     ]
