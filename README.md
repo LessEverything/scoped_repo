@@ -53,13 +53,14 @@ UserRepo.one(user, :spouse)
 UserRepo.get(user, :assets, 20)  # where 20 is the id of an asset
 UserRepo.all(user, :assets)
 
-# bang methods are defined too
-UserRepo.one!(user, :spouse)
+# Bang methods are defined too
+UserRepo.one!(user, :spouse, 20)
 UserRepo.get!(user, :assets, 20)
 
-# You can do inserts and updates and deletes
+# You can do inserts and updates and deletes.
+# For updates and deletes, ids are mandatory even for has_one relationships
 UserRepo.insert(user, :assets, %{...})
-UserRepo.update(user, :assets, 20, %{...})
+UserRepo.update(user, :spouse, 20, %{...})
 UserRepo.delete(user, :assets, 20)
 
 # And even pass in custom changesets for insert & update

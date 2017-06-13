@@ -36,7 +36,6 @@ defmodule ScopedRepo do
         def insert(base, assoc_name,  params, opts \\ [])
       end,
       quote do
-        def update(base, assoc_name, params, opts \\ [])
         def update(base, assoc_name, id, params, opts \\ [])
       end
     ]
@@ -51,14 +50,14 @@ defmodule ScopedRepo do
             def_paramless(repo, :delete_all, assoc_name),
             def_paramless(repo, :one, assoc_name),
             def_paramless(repo, :one!, assoc_name),
-            def_get_with_id(repo, :get, assoc_name),
-            def_get_with_id(repo, :get!, assoc_name),
+            def_get(repo, :get, assoc_name),
+            def_get(repo, :get!, assoc_name),
             def_insert(repo, :insert, assoc_name, relation),
             def_insert(repo, :insert!, assoc_name, relation),
-            def_update_with_id(repo, :update, assoc_name, relation),
-            def_update_with_id(repo, :update!, assoc_name, relation),
-            def_delete_with_id(repo, :delete, assoc_name),
-            def_delete_with_id(repo, :delete!, assoc_name),
+            def_update(repo, :update, assoc_name, relation),
+            def_update(repo, :update!, assoc_name, relation),
+            def_delete(repo, :delete, assoc_name),
+            def_delete(repo, :delete!, assoc_name),
           ]
         %Ecto.Association.Has{cardinality: :one, related: relation} ->
           [
@@ -66,10 +65,10 @@ defmodule ScopedRepo do
             def_paramless(repo, :one!, assoc_name),
             def_insert(repo, :insert, assoc_name, relation),
             def_insert(repo, :insert!, assoc_name, relation),
-            def_update_without_id(repo, :update, assoc_name, relation),
-            def_update_without_id(repo, :update!, assoc_name, relation),
-            def_delete_without_id(repo, :delete, assoc_name),
-            def_delete_without_id(repo, :delete!, assoc_name),
+            def_update(repo, :update, assoc_name, relation),
+            def_update(repo, :update!, assoc_name, relation),
+            def_delete(repo, :delete, assoc_name),
+            def_delete(repo, :delete!, assoc_name),
           ]
         _ ->
           []
@@ -87,7 +86,7 @@ defmodule ScopedRepo do
     end
   end
 
-  defp def_get_with_id(repo, func, assoc_name) do
+  defp def_get(repo, func, assoc_name) do
     quote do
       def unquote(func)(base, unquote(assoc_name), id) do
         base
@@ -109,7 +108,7 @@ defmodule ScopedRepo do
     end
   end
 
-  defp def_update_with_id(repo, func, assoc_name, schema) do
+  defp def_update(repo, func, assoc_name, schema) do
     quote do
       def unquote(func)(base, unquote(assoc_name), id, params, opts) do
         changeset = opts[:changeset] || &unquote(schema).changeset/2
@@ -122,36 +121,12 @@ defmodule ScopedRepo do
     end
   end
 
-  defp def_delete_with_id(repo, func, assoc_name) do
+  defp def_delete(repo, func, assoc_name) do
     quote do
       def unquote(func)(base, unquote(assoc_name), id, params, opts) do
         base
         |> Ecto.assoc(unquote(assoc_name))
         |> unquote(repo).get!(id)
-        |> unquote(repo).unquote(func)
-      end
-    end
-  end
-
-  defp def_update_without_id(repo, func, assoc_name, schema) do
-    quote do
-      def unquote(func)(base, unquote(assoc_name), params, opts) do
-        changeset = opts[:changeset] || &unquote(schema).changeset/2
-        base
-        |> Ecto.assoc(unquote(assoc_name))
-        |> unquote(repo).one!()
-        |> changeset.(params)
-        |> unquote(repo).unquote(func)
-      end
-    end
-  end
-
-  defp def_delete_without_id(repo, func, assoc_name) do
-    quote do
-      def unquote(func)(base, unquote(assoc_name), params, opts) do
-        base
-        |> Ecto.assoc(unquote(assoc_name))
-        |> unquote(repo).one!()
         |> unquote(repo).unquote(func)
       end
     end
